@@ -707,7 +707,7 @@ int check(){
 
     double aij;
     double he;
-    int i;
+    int i,a,b,c;
     int ie;
     int ig;
     int il;
@@ -729,35 +729,15 @@ int check(){
 		Zero out the arrays that hold the coefficients of the matrix
 		and the right hand side.
 		*/
-		long int a, b, c;
 
-		#pragma omp parallel
-		{
-
-			#pragma omp for nowait
-			for ( i = 0; i < nu; i++ )
-			{
-				f[i] = 0.0;
-			}
-
-			#pragma omp for nowait
-			for ( a = 0; a < nu; a++ )
-			{
-				adiag[a] = 0.0;
-			}
-
-			#pragma omp for nowait
-			for ( b = 0; b < nu; b++ )
-			{
-				aleft[b] = 0.0;
-			}
-
-			#pragma omp for nowait
-			for ( c = 0; c < nu; c++ )
-			{
-				arite[c] = 0.0;
-			}
-		}
+      #pragma omp parallel for //nowait
+      for ( i = 0; i < nu; i++ )
+      {
+        f[i] = 0.0;
+        adiag[i] = 0.0;
+        aleft[i] = 0.0;
+        arite[i] = 0.0;
+      }
 
  /*
 	    For interval number IE,
@@ -1432,59 +1412,61 @@ int check(){
     and XN(NSUB) is XR.
 */
   void output (){
-     int i;
-    double u;
 
-    fprintf (fp_sol,"\n" );
-    fprintf (fp_sol,"  Computed solution coefficients:\n" );
-    fprintf (fp_sol, "\n" );
-    fprintf (fp_sol,"  Node    X(I)        U(X(I))\n" );
-    fprintf (fp_sol,"\n" );
+	 int i;
+
+	double u;
+
+	fprintf (fp_sol,"\n" );
+	fprintf (fp_sol,"  Computed solution coefficients:\n" );
+	fprintf (fp_sol, "\n" );
+	fprintf (fp_sol,"  Node    X(I)        U(X(I))\n" );
+	fprintf (fp_sol,"\n" );
 
 
-    for ( i = 0; i <= NSUB; i++ )
-    {
-  /*
-    If we're at the first node, check the boundary condition.
-  */
-      if ( i == 0 )
-      {
-        if ( ibc == 1 || ibc == 3 )
-        {
-          u = ul;
-        }
-        else
-        {
-          u = f[indx[i]-1];
-        }
-      }
-  /*
-    If we're at the last node, check the boundary condition.
-  */
-      else if ( i == NSUB )
-      {
-        if ( ibc == 2 || ibc == 3 )
-        {
-          u = ur;
-        }
-        else
-        {
-          u = f[indx[i]-1];
-        }
-      }
-  /*
-    Any other node, we're sure the value is stored in F.
-  */
-      else
-      {
-        u = f[indx[i]-1];
-      }
+	for ( i = 0; i <= NSUB; i++ )
+	{
+	/*
+	If we're at the first node, check the boundary condition.
+	*/
+	  if ( i == 0 )
+	  {
+	    if ( ibc == 1 || ibc == 3 )
+	    {
+	      u = ul;
+	    }
+	    else
+	    {
+	      u = f[indx[i]-1];
+	    }
+	  }
+	/*
+	If we're at the last node, check the boundary condition.
+	*/
+	  else if ( i == NSUB )
+	  {
+	    if ( ibc == 2 || ibc == 3 )
+	    {
+	      u = ur;
+	    }
+	    else
+	    {
+	      u = f[indx[i]-1];
+	    }
+	  }
+	/*
+	Any other node, we're sure the value is stored in F.
+	*/
+	  else
+	  {
+	    u = f[indx[i]-1];
+	  }
 
-      fprintf ( fp_sol,"  %8d  %8f  %14f\n", i, xn[i], u );
-    }
+	  fprintf ( fp_sol,"  %8d  %8f  %14f\n", i, xn[i], u );
+	}
 
-    return;
-  }
+	return;
+}
 /******************************************************************************/
 
 /*

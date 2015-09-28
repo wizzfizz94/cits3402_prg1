@@ -546,27 +546,28 @@ int check(){
 */
   void assemble (int version){
 
-    double aij;
-    double he;
-    int i;
-    int ie;
-    int ig;
-    int il;
-    int iq;
-    int iu;
-    int jg;
-    int jl;
-    int ju;
-    double phii;
-    double phiix;
-    double phij;
-    double phijx;
-    double x;
-    double xleft;
-    double xquade;
-    double xrite;
-
     if(version == 0){
+
+      double aij;
+      double he;
+      long int i;
+      int ie;
+      int ig;
+      int il;
+      int iq;
+      int iu;
+      int jg;
+      int jl;
+      int ju;
+      double phii;
+      double phiix;
+      double phij;
+      double phijx;
+      double x;
+      double xleft;
+      double xquade;
+      double xrite;
+
 	  /*
 	    Zero out the arrays that hold the coefficients of the matrix
 	    and the right hand side.
@@ -695,26 +696,41 @@ int check(){
 	    return;
 //********************************************************************************
 	} else {
-		 /*
-	    Zero out the arrays that hold the coefficients of the matrix
-	    and the right hand side.
-	  */
-	    for ( i = 0; i < nu; i++ )
-	    {
-	      f[i] = 0.0;
-	    }
-	    for ( i = 0; i < nu; i++ )
-	    {
-	      adiag[i] = 0.0;
-	    }
-	    for ( i = 0; i < nu; i++ )
-	    {
-	      aleft[i] = 0.0;
-	    }
-	    for ( i = 0; i < nu; i++ )
-	    {
-	      arite[i] = 0.0;
-	    }
+    
+      double aij;
+      double he;
+      int i,a,b,c;
+      int ie;
+      int ig;
+      int il;
+      int iq;
+      int iu;
+      int jg;
+      int jl;
+      int ju;
+      double phii;
+      double phiix;
+      double phij;
+      double phijx;
+      double x;
+      double xleft;
+      double xquade;
+      double xrite;
+    /*
+    Zero out the arrays that hold the coefficients of the matrix
+    and the right hand side.
+    */
+
+      #pragma omp parallel for //nowait
+      for ( i = 0; i < nu; i++ )
+      {
+        f[i] = 0.0;
+        adiag[i] = 0.0;
+        aleft[i] = 0.0;
+        arite[i] = 0.0;
+      }
+
+
 	  /*
 	    For interval number IE,
 	  */
@@ -1063,6 +1079,7 @@ int check(){
       fprintf (fp_out, "  Node      Location\n" );
       fprintf (fp_out, "\n" );
 
+      //#pragma omp parallel for
       for ( i = 0; i <= NSUB; i++ )
       {
         xn[i]  =  ( ( double ) ( NSUB - i ) * xl 
