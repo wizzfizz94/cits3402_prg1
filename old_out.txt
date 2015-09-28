@@ -1,4 +1,4 @@
-28 September 2015 02:34:14 PM
+28 September 2015 02:30:32 PM
 
 FEM1D
   C version
@@ -60051,4 +60051,4 @@ Equation  ALEFT  ADIAG  ARITE  RHS
 FEM1D:
   Normal end of execution.
 
-28 September 2015 02:34:14 PM
+28 September 2015 02:30:32 PM
